@@ -3,7 +3,7 @@ package v1
 import (
 	"context"
 
-	"github.com/eve-network/eve/app/upgrades"
+	"github.com/HyperiaNetwork/hyperia/app/upgrades"
 	feemarkettypes "github.com/skip-mev/feemarket/x/feemarket/types"
 
 	sdkmath "cosmossdk.io/math"

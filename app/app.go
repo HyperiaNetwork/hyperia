@@ -10,6 +10,7 @@ import (
 	"sync"
 
 	wasmvm "github.com/CosmWasm/wasmvm/v2"
+	"github.com/HyperiaNetwork/hyperia/app/ante"
 	abci "github.com/cometbft/cometbft/abci/types"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	dbm "github.com/cosmos/cosmos-db"
@@ -44,7 +45,6 @@ import (
 	ibcexported "github.com/cosmos/ibc-go/v8/modules/core/exported"
 	ibckeeper "github.com/cosmos/ibc-go/v8/modules/core/keeper"
 	ibctm "github.com/cosmos/ibc-go/v8/modules/light-clients/07-tendermint"
-	"github.com/eve-network/eve/app/ante"
 	feeabsmodule "github.com/osmosis-labs/fee-abstraction/v8/x/feeabs"
 	feeabskeeper "github.com/osmosis-labs/fee-abstraction/v8/x/feeabs/keeper"
 	feeabstypes "github.com/osmosis-labs/fee-abstraction/v8/x/feeabs/types"

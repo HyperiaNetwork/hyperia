@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"github.com/eve-network/eve/app"
+	"github.com/HyperiaNetwork/hyperia/app"
 
 	"cosmossdk.io/log"
 

@@ -13,7 +13,7 @@ This testnet will start with the node version `v0.0.5`.
 ### Install node
 
 ```bash
-git clone https://github.com/eve-network/eve.git
+git clone https://github.com/HyperiaNetwork/hyperia.git
 cd eve
 git checkout v0.0.5
 make install
@@ -74,8 +74,8 @@ Genesis transaction written to "/home/user/.eved/config/gentx/gentx-******.json"
 - Commit and push to your repo
 - Create a PR on this repo
 
-
 ## Setup validator
+
 Set up your node and add seed-nodes
 
     aad13aee1a9e3f55c16364c2af42832fefb2b735@94.130.64.229:26656

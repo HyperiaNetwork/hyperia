@@ -3,8 +3,8 @@ package app
 import (
 	"fmt"
 
-	"github.com/eve-network/eve/app/upgrades"
-	v1 "github.com/eve-network/eve/app/upgrades/v1"
+	"github.com/HyperiaNetwork/hyperia/app/upgrades"
+	v1 "github.com/HyperiaNetwork/hyperia/app/upgrades/v1"
 
 	upgradetypes "cosmossdk.io/x/upgrade/types"
 

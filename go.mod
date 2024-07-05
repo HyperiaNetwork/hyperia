@@ -1,4 +1,4 @@
-module github.com/eve-network/eve
+module github.com/HyperiaNetwork/hyperia
 
 go 1.22.3
 

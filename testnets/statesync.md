@@ -13,7 +13,7 @@ This testnet will start with the node version `0.0.2`.
 ### Install node
 
 ```bash
-git clone https://github.com/eve-network/eve.git
+git clone https://github.com/HyperiaNetwork/hyperia.git
 cd eve
 git checkout v0.0.2
 make install

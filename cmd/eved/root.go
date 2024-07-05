@@ -3,9 +3,9 @@ package main
 import (
 	"os"
 
+	"github.com/HyperiaNetwork/hyperia/app"
+	"github.com/HyperiaNetwork/hyperia/app/params"
 	dbm "github.com/cosmos/cosmos-db"
-	"github.com/eve-network/eve/app"
-	"github.com/eve-network/eve/app/params"
 	"github.com/spf13/cobra"
 
 	"cosmossdk.io/log"

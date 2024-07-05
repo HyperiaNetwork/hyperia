@@ -5,9 +5,9 @@ import (
 	"io"
 	"os"
 
+	"github.com/HyperiaNetwork/hyperia/app"
 	cmtcfg "github.com/cometbft/cometbft/config"
 	dbm "github.com/cosmos/cosmos-db"
-	"github.com/eve-network/eve/app"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/spf13/cast"
 	"github.com/spf13/cobra"

@@ -3,8 +3,8 @@ package app
 import (
 	"testing"
 
+	"github.com/HyperiaNetwork/hyperia/app/params"
 	dbm "github.com/cosmos/cosmos-db"
-	"github.com/eve-network/eve/app/params"
 
 	"cosmossdk.io/log"
 
