@@ -966,7 +966,7 @@ func NewHyperiaApp( //nolint:maintidx // TODO: refactor so that the code is more
 
 	// RegisterUpgradeHandlers is used for registering any on-chain upgrades.
 	// Make sure it's called after `app.ModuleManager` and `app.configurator` are set.
-	app.RegisterUpgradeHandlers()
+	// 	app.RegisterUpgradeHandlers() // NOTE: this is not called because we don't have any on-chain upgrades
 
 	autocliv1.RegisterQueryServer(app.GRPCQueryRouter(), runtimeservices.NewAutoCLIQueryService(app.ModuleManager.Modules))
 
