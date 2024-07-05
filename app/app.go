@@ -295,7 +295,7 @@ type HyperiaApp struct {
 }
 
 // NewHyperiaApp returns a reference to an initialized HyperiaApp.
-func NewHyperiaApp(
+func NewHyperiaApp( //nolint:maintidx // TODO: refactor so that the code is more maintainable
 	logger log.Logger,
 	db dbm.DB,
 	traceStore io.Writer,
