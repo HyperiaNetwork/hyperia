@@ -147,9 +147,9 @@ func queryCommand() *cobra.Command {
 	}
 
 	cmd.AddCommand(
-		rpc.QueryHyperiantForTxCmd(),
+		rpc.QueryEventForTxCmd(),
 		server.QueryBlockCmd(),
-		authcmd.QueryTxsByHyperiantsCmd(),
+		authcmd.QueryTxsByEventsCmd(),
 		server.QueryBlocksCmd(),
 		authcmd.QueryTxCmd(),
 		server.QueryBlockResultsCmd(),
