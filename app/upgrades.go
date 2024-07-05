@@ -29,7 +29,7 @@ import (
 var Upgrades = []upgrades.Upgrade{v1.Upgrade}
 
 // RegisterUpgradeHandlers registers the chain upgrade handlers
-func (app *EveApp) RegisterUpgradeHandlers() {
+func (app *HyperiaApp) RegisterUpgradeHandlers() {
 	setupLegacyKeyTables(&app.ParamsKeeper)
 
 	keepers := upgrades.AppKeepers{

@@ -147,9 +147,9 @@ func queryCommand() *cobra.Command {
 	}
 
 	cmd.AddCommand(
-		rpc.QueryEventForTxCmd(),
+		rpc.QueryHyperiantForTxCmd(),
 		server.QueryBlockCmd(),
-		authcmd.QueryTxsByEventsCmd(),
+		authcmd.QueryTxsByHyperiantsCmd(),
 		server.QueryBlocksCmd(),
 		authcmd.QueryTxCmd(),
 		server.QueryBlockResultsCmd(),
@@ -196,7 +196,7 @@ func newApp(
 		wasmOpts = append(wasmOpts, wasmkeeper.WithVMCacheMetrics(prometheus.DefaultRegisterer))
 	}
 
-	return app.NewEveApp(
+	return app.NewHyperiaApp(
 		logger, db, traceStore, true,
 		appOpts,
 		wasmOpts,
@@ -215,7 +215,7 @@ func appExport(
 	appOpts servertypes.AppOptions,
 	modulesToExport []string,
 ) (servertypes.ExportedApp, error) {
-	var wasmApp *app.EveApp
+	var wasmApp *app.HyperiaApp
 	// this check is necessary as we use the flag in x/upgrade.
 	// we can exit more gracefully by checking the flag here.
 	homePath, ok := appOpts.Get(flags.FlagHome).(string)
@@ -233,7 +233,7 @@ func appExport(
 	appOpts = viperAppOpts
 
 	var emptyWasmOpts []wasmkeeper.Option
-	wasmApp = app.NewEveApp(
+	wasmApp = app.NewHyperiaApp(
 		logger,
 		db,
 		traceStore,

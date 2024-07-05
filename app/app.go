@@ -162,7 +162,7 @@ import (
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 )
 
-const appName = "EveApp"
+const appName = "HyperiaApp"
 
 const (
 	// ContractMemoryLimit is the memory limit of each contract execution (in MiB)
@@ -172,8 +172,8 @@ const (
 
 // We pull these out so we can set them with LDFLAGS in the Makefile
 var (
-	NodeDir      = ".eved"
-	Bech32Prefix = "eve"
+	NodeDir      = ".hyperiad"
+	Bech32Prefix = "hyperia"
 )
 
 // These constants are derived from the above variables.
@@ -220,12 +220,12 @@ var maccPerms = map[string][]string{
 }
 
 var (
-	_ runtime.AppI            = (*EveApp)(nil)
-	_ servertypes.Application = (*EveApp)(nil)
+	_ runtime.AppI            = (*HyperiaApp)(nil)
+	_ servertypes.Application = (*HyperiaApp)(nil)
 )
 
-// EveApp extended ABCI application
-type EveApp struct {
+// HyperiaApp extended ABCI application
+type HyperiaApp struct {
 	*baseapp.BaseApp
 	legacyAmino       *codec.LegacyAmino
 	appCodec          codec.Codec
@@ -292,8 +292,8 @@ type EveApp struct {
 	once         sync.Once
 }
 
-// NewEveApp returns a reference to an initialized EveApp.
-func NewEveApp(
+// NewHyperiaApp returns a reference to an initialized HyperiaApp.
+func NewHyperiaApp(
 	logger log.Logger,
 	db dbm.DB,
 	traceStore io.Writer,
@@ -301,7 +301,7 @@ func NewEveApp(
 	appOpts servertypes.AppOptions,
 	wasmOpts []wasmkeeper.Option,
 	baseAppOptions ...func(*baseapp.BaseApp),
-) *EveApp {
+) *HyperiaApp {
 	interfaceRegistry, err := types.NewInterfaceRegistryWithOptions(types.InterfaceRegistryOptions{
 		ProtoFiles: proto.HybridResolver,
 		SigningOptions: signing.Options{
@@ -355,7 +355,7 @@ func NewEveApp(
 		panic(err)
 	}
 
-	app := &EveApp{
+	app := &HyperiaApp{
 		BaseApp:           bApp,
 		legacyAmino:       legacyAmino,
 		appCodec:          appCodec,
@@ -380,7 +380,7 @@ func NewEveApp(
 		appCodec,
 		runtime.NewKVStoreService(keys[consensusparamtypes.StoreKey]),
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-		runtime.EventService{},
+		runtime.HyperiantService{},
 	)
 	bApp.SetParamStore(app.ConsensusParamsKeeper.ParamsStore)
 
@@ -1061,7 +1061,7 @@ func NewEveApp(
 	return app
 }
 
-func (app *EveApp) FinalizeBlock(req *abci.RequestFinalizeBlock) (*abci.ResponseFinalizeBlock, error) {
+func (app *HyperiaApp) FinalizeBlock(req *abci.RequestFinalizeBlock) (*abci.ResponseFinalizeBlock, error) {
 	// when skipping sdk 47 for sdk 50, the upgrade handler is called too late in BaseApp
 	// this is a hack to ensure that the migration is executed when needed and not panics
 	app.once.Do(func() {
@@ -1082,7 +1082,7 @@ func (app *EveApp) FinalizeBlock(req *abci.RequestFinalizeBlock) (*abci.Response
 	return app.BaseApp.FinalizeBlock(req)
 }
 
-func (app *EveApp) setAnteHandler(txConfig client.TxConfig, wasmConfig wasmtypes.WasmConfig, txCounterStoreKey *storetypes.KVStoreKey) {
+func (app *HyperiaApp) setAnteHandler(txConfig client.TxConfig, wasmConfig wasmtypes.WasmConfig, txCounterStoreKey *storetypes.KVStoreKey) {
 	anteHandler, err := ante.NewAnteHandler(
 		ante.HandlerOptions{
 			HandlerOptions: authante.HandlerOptions{
@@ -1110,7 +1110,7 @@ func (app *EveApp) setAnteHandler(txConfig client.TxConfig, wasmConfig wasmtypes
 	app.SetAnteHandler(anteHandler)
 }
 
-func (app *EveApp) setPostHandler() {
+func (app *HyperiaApp) setPostHandler() {
 	postHandler := feemarketapp.PostHandlerOptions{
 		AccountKeeper:   app.AccountKeeper,
 		BankKeeper:      app.BankKeeper,
@@ -1126,29 +1126,29 @@ func (app *EveApp) setPostHandler() {
 }
 
 // Name returns the name of the App
-func (app *EveApp) Name() string { return app.BaseApp.Name() }
+func (app *HyperiaApp) Name() string { return app.BaseApp.Name() }
 
 // PreBlocker application updates every pre block
-func (app *EveApp) PreBlocker(ctx sdk.Context, _ *abci.RequestFinalizeBlock) (*sdk.ResponsePreBlock, error) {
+func (app *HyperiaApp) PreBlocker(ctx sdk.Context, _ *abci.RequestFinalizeBlock) (*sdk.ResponsePreBlock, error) {
 	return app.ModuleManager.PreBlock(ctx)
 }
 
 // BeginBlocker application updates every begin block
-func (app *EveApp) BeginBlocker(ctx sdk.Context) (sdk.BeginBlock, error) {
+func (app *HyperiaApp) BeginBlocker(ctx sdk.Context) (sdk.BeginBlock, error) {
 	return app.ModuleManager.BeginBlock(ctx)
 }
 
 // EndBlocker application updates every end block
-func (app *EveApp) EndBlocker(ctx sdk.Context) (sdk.EndBlock, error) {
+func (app *HyperiaApp) EndBlocker(ctx sdk.Context) (sdk.EndBlock, error) {
 	return app.ModuleManager.EndBlock(ctx)
 }
 
-func (a *EveApp) Configurator() module.Configurator {
+func (a *HyperiaApp) Configurator() module.Configurator {
 	return a.configurator
 }
 
 // InitChainer application update at chain initialization
-func (app *EveApp) InitChainer(ctx sdk.Context, req *abci.RequestInitChain) (*abci.ResponseInitChain, error) {
+func (app *HyperiaApp) InitChainer(ctx sdk.Context, req *abci.RequestInitChain) (*abci.ResponseInitChain, error) {
 	var genesisState GenesisState
 	if err := json.Unmarshal(req.AppStateBytes, &genesisState); err != nil {
 		panic(err)
@@ -1162,7 +1162,7 @@ func (app *EveApp) InitChainer(ctx sdk.Context, req *abci.RequestInitChain) (*ab
 }
 
 // LoadHeight loads a particular height
-func (app *EveApp) LoadHeight(height int64) error {
+func (app *HyperiaApp) LoadHeight(height int64) error {
 	return app.LoadVersion(height)
 }
 
@@ -1170,7 +1170,7 @@ func (app *EveApp) LoadHeight(height int64) error {
 //
 // NOTE: This is solely to be used for testing purposes as it may be desirable
 // for modules to register their own custom testing types.
-func (app *EveApp) LegacyAmino() *codec.LegacyAmino {
+func (app *HyperiaApp) LegacyAmino() *codec.LegacyAmino {
 	return app.legacyAmino
 }
 
@@ -1178,22 +1178,22 @@ func (app *EveApp) LegacyAmino() *codec.LegacyAmino {
 //
 // NOTE: This is solely to be used for testing purposes as it may be desirable
 // for modules to register their own custom testing types.
-func (app *EveApp) AppCodec() codec.Codec {
+func (app *HyperiaApp) AppCodec() codec.Codec {
 	return app.appCodec
 }
 
-// InterfaceRegistry returns EveApp's InterfaceRegistry
-func (app *EveApp) InterfaceRegistry() types.InterfaceRegistry {
+// InterfaceRegistry returns HyperiaApp's InterfaceRegistry
+func (app *HyperiaApp) InterfaceRegistry() types.InterfaceRegistry {
 	return app.interfaceRegistry
 }
 
-// TxConfig returns EveApp's TxConfig
-func (app *EveApp) TxConfig() client.TxConfig {
+// TxConfig returns HyperiaApp's TxConfig
+func (app *HyperiaApp) TxConfig() client.TxConfig {
 	return app.txConfig
 }
 
 // AutoCliOpts returns the autocli options for the app.
-func (app *EveApp) AutoCliOpts() autocli.AppOptions {
+func (app *HyperiaApp) AutoCliOpts() autocli.AppOptions {
 	modules := make(map[string]appmodule.AppModule, 0)
 	for _, m := range app.ModuleManager.Modules {
 		if moduleWithName, ok := m.(module.HasName); ok {
@@ -1214,19 +1214,19 @@ func (app *EveApp) AutoCliOpts() autocli.AppOptions {
 }
 
 // DefaultGenesis returns a default genesis from the registered AppModuleBasic's.
-func (a *EveApp) DefaultGenesis() map[string]json.RawMessage {
+func (a *HyperiaApp) DefaultGenesis() map[string]json.RawMessage {
 	return a.BasicModuleManager.DefaultGenesis(a.appCodec)
 }
 
 // GetKey returns the KVStoreKey for the provided store key.
 //
 // NOTE: This is solely to be used for testing purposes.
-func (app *EveApp) GetKey(storeKey string) *storetypes.KVStoreKey {
+func (app *HyperiaApp) GetKey(storeKey string) *storetypes.KVStoreKey {
 	return app.keys[storeKey]
 }
 
 // GetStoreKeys returns all the stored store keys.
-func (app *EveApp) GetStoreKeys() []storetypes.StoreKey {
+func (app *HyperiaApp) GetStoreKeys() []storetypes.StoreKey {
 	keys := make([]storetypes.StoreKey, 0, len(app.keys))
 	for _, key := range app.keys {
 		keys = append(keys, key)
@@ -1240,33 +1240,33 @@ func (app *EveApp) GetStoreKeys() []storetypes.StoreKey {
 // GetTKey returns the TransientStoreKey for the provided store key.
 //
 // NOTE: This is solely to be used for testing purposes.
-func (app *EveApp) GetTKey(storeKey string) *storetypes.TransientStoreKey {
+func (app *HyperiaApp) GetTKey(storeKey string) *storetypes.TransientStoreKey {
 	return app.tkeys[storeKey]
 }
 
 // GetMemKey returns the MemStoreKey for the provided mem key.
 //
 // NOTE: This is solely used for testing purposes.
-func (app *EveApp) GetMemKey(storeKey string) *storetypes.MemoryStoreKey {
+func (app *HyperiaApp) GetMemKey(storeKey string) *storetypes.MemoryStoreKey {
 	return app.memKeys[storeKey]
 }
 
 // GetSubspace returns a param subspace for a given module name.
 //
 // NOTE: This is solely to be used for testing purposes.
-func (app *EveApp) GetSubspace(moduleName string) paramstypes.Subspace {
+func (app *HyperiaApp) GetSubspace(moduleName string) paramstypes.Subspace {
 	subspace, _ := app.ParamsKeeper.GetSubspace(moduleName)
 	return subspace
 }
 
 // SimulationManager implements the SimulationApp interface
-func (app *EveApp) SimulationManager() *module.SimulationManager {
+func (app *HyperiaApp) SimulationManager() *module.SimulationManager {
 	return app.sm
 }
 
 // RegisterAPIRoutes registers all application module routes with the provided
 // API server.
-func (app *EveApp) RegisterAPIRoutes(apiSvr *api.Server, apiConfig config.APIConfig) {
+func (app *HyperiaApp) RegisterAPIRoutes(apiSvr *api.Server, apiConfig config.APIConfig) {
 	clientCtx := apiSvr.ClientCtx
 	// Register new tx routes from grpc-gateway.
 	authtx.RegisterGRPCGatewayRoutes(clientCtx, apiSvr.GRPCGatewayRouter)
@@ -1287,12 +1287,12 @@ func (app *EveApp) RegisterAPIRoutes(apiSvr *api.Server, apiConfig config.APICon
 }
 
 // RegisterTxService implements the Application.RegisterTxService method.
-func (app *EveApp) RegisterTxService(clientCtx client.Context) {
+func (app *HyperiaApp) RegisterTxService(clientCtx client.Context) {
 	authtx.RegisterTxService(app.BaseApp.GRPCQueryRouter(), clientCtx, app.BaseApp.Simulate, app.interfaceRegistry)
 }
 
 // RegisterTendermintService implements the Application.RegisterTendermintService method.
-func (app *EveApp) RegisterTendermintService(clientCtx client.Context) {
+func (app *HyperiaApp) RegisterTendermintService(clientCtx client.Context) {
 	cmtApp := server.NewCometABCIWrapper(app)
 	cmtservice.RegisterTendermintService(
 		clientCtx,
@@ -1302,7 +1302,7 @@ func (app *EveApp) RegisterTendermintService(clientCtx client.Context) {
 	)
 }
 
-func (app *EveApp) RegisterNodeService(clientCtx client.Context, cfg config.Config) {
+func (app *HyperiaApp) RegisterNodeService(clientCtx client.Context, cfg config.Config) {
 	nodeservice.RegisterNodeService(clientCtx, app.GRPCQueryRouter(), cfg)
 }
 
