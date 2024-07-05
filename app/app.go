@@ -1017,7 +1017,7 @@ func NewHyperiaApp(
 			wasm08keeper.NewWasmSnapshotter(app.CommitMultiStore(), &app.Wasm08Keeper),
 		)
 		if err != nil {
-			panic(fmt.Errorf("failed to register snapshot extension: %s", err))
+			panic(fmt.Errorf("failed to register snapshot extension: %w", err))
 		}
 	}
 
@@ -1105,7 +1105,7 @@ func (app *HyperiaApp) setAnteHandler(txConfig client.TxConfig, wasmConfig wasmt
 		},
 	)
 	if err != nil {
-		panic(fmt.Errorf("failed to create AnteHandler: %s", err))
+		panic(fmt.Errorf("failed to create AnteHandler: %w", err))
 	}
 
 	// Set the AnteHandler for the app
@@ -1122,7 +1122,7 @@ func (app *HyperiaApp) setPostHandler() {
 	// Set the PostHandler for the app
 	sdkPostHandler, err := feemarketapp.NewPostHandler(postHandler)
 	if err != nil {
-		panic(fmt.Errorf("failed to create PostHandler: %s", err))
+		panic(fmt.Errorf("failed to create PostHandler: %w", err))
 	}
 	app.SetPostHandler(sdkPostHandler)
 }
