@@ -3,9 +3,6 @@ package app
 import (
 	"fmt"
 
-	"github.com/HyperiaNetwork/hyperia/app/upgrades"
-	v1 "github.com/HyperiaNetwork/hyperia/app/upgrades/v1"
-
 	upgradetypes "cosmossdk.io/x/upgrade/types"
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
@@ -23,13 +20,16 @@ import (
 
 	v2 "github.com/CosmWasm/wasmd/x/wasm/migrations/v2"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
+
+	"github.com/HyperiaNetwork/hyperia/app/upgrades"
+	v1 "github.com/HyperiaNetwork/hyperia/app/upgrades/v1"
 )
 
 // Upgrades list of chain upgrades
 var Upgrades = []upgrades.Upgrade{v1.Upgrade}
 
 // RegisterUpgradeHandlers registers the chain upgrade handlers
-func (app *EveApp) RegisterUpgradeHandlers() {
+func (app *HyperiaApp) RegisterUpgradeHandlers() {
 	setupLegacyKeyTables(&app.ParamsKeeper)
 
 	keepers := upgrades.AppKeepers{

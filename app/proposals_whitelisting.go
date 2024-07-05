@@ -6,7 +6,7 @@ import (
 
 // This is used for non-legacy gov transactions
 // Returning true cause all txs are whitelisted
-func IsModuleWhiteList(typeUrl string) bool {
+func IsModuleWhiteList(typeURL string) bool {
 	return true
 }
 

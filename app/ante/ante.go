@@ -1,8 +1,6 @@
 package ante
 
 import (
-	ibcante "github.com/cosmos/ibc-go/v8/modules/core/ante"
-	"github.com/cosmos/ibc-go/v8/modules/core/keeper"
 	feeabskeeper "github.com/osmosis-labs/fee-abstraction/v8/x/feeabs/keeper"
 	feeabstypes "github.com/osmosis-labs/fee-abstraction/v8/x/feeabs/types"
 	feemarketante "github.com/skip-mev/feemarket/x/feemarket/ante"
@@ -14,6 +12,9 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth/ante"
+
+	ibcante "github.com/cosmos/ibc-go/v8/modules/core/ante"
+	"github.com/cosmos/ibc-go/v8/modules/core/keeper"
 
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	wasmTypes "github.com/CosmWasm/wasmd/x/wasm/types"
@@ -87,7 +88,7 @@ func NewAnteHandler(options HandlerOptions) (sdk.AnteHandler, error) {
 	return sdk.ChainAnteDecorators(anteDecorators...), nil
 }
 
-// DenomResolverImpl is Eve's implementation of x/feemarket's DenomResolver
+// DenomResolverImpl is Hyperia's implementation of x/feemarket's DenomResolver
 type DenomResolverImpl struct {
 	FeeabsKeeper  feeabskeeper.Keeper
 	StakingKeeper feeabstypes.StakingKeeper

@@ -3,11 +3,11 @@ package main
 import (
 	"os"
 
-	"github.com/HyperiaNetwork/hyperia/app"
-
 	"cosmossdk.io/log"
 
 	svrcmd "github.com/cosmos/cosmos-sdk/server/cmd"
+
+	"github.com/HyperiaNetwork/hyperia/app"
 )
 
 func main() {

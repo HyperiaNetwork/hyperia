@@ -1,6 +1,8 @@
 package app
 
 import (
+	crand "crypto/rand"
+	"encoding/binary"
 	"encoding/json"
 	"fmt"
 	"math/rand"
@@ -45,7 +47,7 @@ import (
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 )
 
-// SetupOptions defines arguments that are passed into `EveApp` constructor.
+// SetupOptions defines arguments that are passed into `HyperiaApp` constructor.
 type SetupOptions struct {
 	Logger   log.Logger
 	DB       *dbm.MemDB
@@ -53,29 +55,30 @@ type SetupOptions struct {
 	WasmOpts []wasmkeeper.Option
 }
 
-func setup(t testing.TB, chainID string, withGenesis bool, invCheckPeriod uint, opts ...wasmkeeper.Option) (*EveApp, GenesisState) {
+func setup(tb testing.TB, chainID string, withGenesis bool, invCheckPeriod uint, opts ...wasmkeeper.Option) (*HyperiaApp, GenesisState) {
+	tb.Helper()
 	db := dbm.NewMemDB()
-	nodeHome := t.TempDir()
+	nodeHome := tb.TempDir()
 	snapshotDir := filepath.Join(nodeHome, "data", "snapshots")
 
 	snapshotDB, err := dbm.NewDB("metadata", dbm.GoLevelDBBackend, snapshotDir)
-	require.NoError(t, err)
-	t.Cleanup(func() { snapshotDB.Close() })
+	require.NoError(tb, err)
+	tb.Cleanup(func() { snapshotDB.Close() })
 	snapshotStore, err := snapshots.NewStore(snapshotDB, snapshotDir)
-	require.NoError(t, err)
+	require.NoError(tb, err)
 
 	appOptions := make(simtestutil.AppOptionsMap, 0)
 	appOptions[flags.FlagHome] = nodeHome // ensure unique folder
 	appOptions[server.FlagInvCheckPeriod] = invCheckPeriod
-	app := NewEveApp(log.NewNopLogger(), db, nil, true, appOptions, opts, bam.SetChainID(chainID), bam.SetSnapshot(snapshotStore, snapshottypes.SnapshotOptions{KeepRecent: 2}))
+	app := NewHyperiaApp(log.NewNopLogger(), db, nil, true, appOptions, opts, bam.SetChainID(chainID), bam.SetSnapshot(snapshotStore, snapshottypes.SnapshotOptions{KeepRecent: 2}))
 	if withGenesis {
 		return app, app.DefaultGenesis()
 	}
 	return app, GenesisState{}
 }
 
-// NewWasmAppWithCustomOptions initializes a new EveApp with custom options.
-func NewWasmAppWithCustomOptions(t *testing.T, isCheckTx bool, options SetupOptions) *EveApp {
+// NewWasmAppWithCustomOptions initializes a new HyperiaApp with custom options.
+func NewWasmAppWithCustomOptions(t *testing.T, isCheckTx bool, options SetupOptions) *HyperiaApp {
 	t.Helper()
 
 	privVal := mock.NewPV()
@@ -93,7 +96,7 @@ func NewWasmAppWithCustomOptions(t *testing.T, isCheckTx bool, options SetupOpti
 		Coins:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdkmath.NewInt(100000000000000))),
 	}
 
-	app := NewEveApp(options.Logger, options.DB, nil, true, options.AppOpts, options.WasmOpts)
+	app := NewHyperiaApp(options.Logger, options.DB, nil, true, options.AppOpts, options.WasmOpts)
 	genesisState := app.DefaultGenesis()
 	genesisState, err = GenesisStateWithValSet(app.AppCodec(), genesisState, valSet, []authtypes.GenesisAccount{acc}, balance)
 	require.NoError(t, err)
@@ -116,8 +119,8 @@ func NewWasmAppWithCustomOptions(t *testing.T, isCheckTx bool, options SetupOpti
 	return app
 }
 
-// Setup initializes a new EveApp. A Nop logger is set in EveApp.
-func Setup(t *testing.T, opts ...wasmkeeper.Option) *EveApp {
+// Setup initializes a new HyperiaApp. A Nop logger is set in HyperiaApp.
+func Setup(t *testing.T, opts ...wasmkeeper.Option) *HyperiaApp {
 	t.Helper()
 
 	privVal := mock.NewPV()
@@ -141,10 +144,10 @@ func Setup(t *testing.T, opts ...wasmkeeper.Option) *EveApp {
 	return app
 }
 
-// SetupWithGenesisValSet initializes a new EveApp with a validator set and genesis accounts
+// SetupWithGenesisValSet initializes a new HyperiaApp with a validator set and genesis accounts
 // that also act as delegators. For simplicity, each validator is bonded with a delegation
-// of one consensus engine unit in the default token of the EveApp from first genesis
-// account. A Nop logger is set in EveApp.
+// of one consensus engine unit in the default token of the HyperiaApp from first genesis
+// account. A Nop logger is set in HyperiaApp.
 func SetupWithGenesisValSet(
 	t *testing.T,
 	valSet *cmttypes.ValidatorSet,
@@ -152,7 +155,7 @@ func SetupWithGenesisValSet(
 	chainID string,
 	opts []wasmkeeper.Option,
 	balances ...banktypes.Balance,
-) *EveApp {
+) *HyperiaApp {
 	t.Helper()
 
 	app, genesisState := setup(t, chainID, true, 5, opts...)
@@ -186,14 +189,15 @@ func SetupWithGenesisValSet(
 }
 
 // SetupWithEmptyStore set up a wasmd app instance with empty DB
-func SetupWithEmptyStore(t testing.TB) *EveApp {
-	app, _ := setup(t, "testing", false, 0)
+func SetupWithEmptyStore(tb testing.TB) *HyperiaApp {
+	tb.Helper()
+	app, _ := setup(tb, "testing", false, 0)
 	return app
 }
 
 // GenesisStateWithSingleValidator initializes GenesisState with a single validator and genesis accounts
 // that also act as delegators.
-func GenesisStateWithSingleValidator(t *testing.T, app *EveApp) GenesisState {
+func GenesisStateWithSingleValidator(t *testing.T, app *HyperiaApp) GenesisState {
 	t.Helper()
 
 	privVal := mock.NewPV()
@@ -223,11 +227,11 @@ func GenesisStateWithSingleValidator(t *testing.T, app *EveApp) GenesisState {
 
 // AddTestAddrsIncremental constructs and returns accNum amount of accounts with an
 // initial balance of accAmt in random order
-func AddTestAddrsIncremental(app *EveApp, ctx sdk.Context, accNum int, accAmt sdkmath.Int) []sdk.AccAddress {
+func AddTestAddrsIncremental(app *HyperiaApp, ctx sdk.Context, accNum int, accAmt sdkmath.Int) []sdk.AccAddress {
 	return addTestAddrs(app, ctx, accNum, accAmt, simtestutil.CreateIncrementalAccounts)
 }
 
-func addTestAddrs(app *EveApp, ctx sdk.Context, accNum int, accAmt sdkmath.Int, strategy simtestutil.GenerateAccountStrategy) []sdk.AccAddress {
+func addTestAddrs(app *HyperiaApp, ctx sdk.Context, accNum int, accAmt sdkmath.Int, strategy simtestutil.GenerateAccountStrategy) []sdk.AccAddress {
 	testAddrs := strategy(accNum)
 	bondDenom, err := app.StakingKeeper.BondDenom(ctx)
 	if err != nil {
@@ -243,7 +247,7 @@ func addTestAddrs(app *EveApp, ctx sdk.Context, accNum int, accAmt sdkmath.Int, 
 	return testAddrs
 }
 
-func initAccountWithCoins(app *EveApp, ctx sdk.Context, addr sdk.AccAddress, coins sdk.Coins) {
+func initAccountWithCoins(app *HyperiaApp, ctx sdk.Context, addr sdk.AccAddress, coins sdk.Coins) {
 	err := app.BankKeeper.MintCoins(ctx, minttypes.ModuleName, coins)
 	if err != nil {
 		panic(err)
@@ -257,7 +261,7 @@ func initAccountWithCoins(app *EveApp, ctx sdk.Context, addr sdk.AccAddress, coi
 
 var emptyWasmOptions []wasmkeeper.Option
 
-// NewTestNetworkFixture returns a new EveApp AppConstructor for network simulation tests
+// NewTestNetworkFixture returns a new HyperiaApp AppConstructor for network simulation tests
 func NewTestNetworkFixture() network.TestFixture {
 	dir, err := os.MkdirTemp("", "simapp")
 	if err != nil {
@@ -265,9 +269,9 @@ func NewTestNetworkFixture() network.TestFixture {
 	}
 	defer os.RemoveAll(dir)
 
-	app := NewEveApp(log.NewNopLogger(), dbm.NewMemDB(), nil, true, simtestutil.NewAppOptionsWithFlagHome(dir), emptyWasmOptions)
+	app := NewHyperiaApp(log.NewNopLogger(), dbm.NewMemDB(), nil, true, simtestutil.NewAppOptionsWithFlagHome(dir), emptyWasmOptions)
 	appCtr := func(val network.ValidatorI) servertypes.Application {
-		return NewEveApp(
+		return NewHyperiaApp(
 			val.GetCtx().Logger, dbm.NewMemDB(), nil, true,
 			simtestutil.NewAppOptionsWithFlagHome(val.GetCtx().Config.RootDir),
 			emptyWasmOptions,
@@ -291,8 +295,15 @@ func NewTestNetworkFixture() network.TestFixture {
 
 // SignAndDeliverWithoutCommit signs and delivers a transaction. No commit
 func SignAndDeliverWithoutCommit(t *testing.T, txCfg client.TxConfig, app *bam.BaseApp, msgs []sdk.Msg, fees sdk.Coins, chainID string, accNums, accSeqs []uint64, blockTime time.Time, priv ...cryptotypes.PrivKey) (*abci.ResponseFinalizeBlock, error) {
+	t.Helper()
+
+	// Generate a cryptographically secure random seed
+	var seed int64
+	err := binary.Read(crand.Reader, binary.BigEndian, &seed)
+	require.NoError(t, err)
+
 	tx, err := simtestutil.GenSignedMockTx(
-		rand.New(rand.NewSource(time.Now().UnixNano())),
+		rand.New(rand.NewSource(seed)), //nolint:gosec // we need to return a math/rand here
 		txCfg,
 		msgs,
 		fees,
