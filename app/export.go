@@ -53,7 +53,7 @@ func (app *HyperiaApp) ExportAppStateAndValidators(forZeroHeight bool, jailAllow
 // NOTE zero height genesis is a temporary feature which will be deprecated
 //
 //	in favor of export at a block height
-func (app *HyperiaApp) prepForZeroHeightGenesis(ctx sdk.Context, jailAllowedAddrs []string) {
+func (app *HyperiaApp) prepForZeroHeightGenesis(ctx sdk.Context, jailAllowedAddrs []string) { //nolint:maintidx // TODO: refactor so that the code is more maintainable
 	applyAllowedAddrs := false
 
 	// check if there is a allowed address list

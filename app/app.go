@@ -295,7 +295,7 @@ type HyperiaApp struct {
 }
 
 // NewHyperiaApp returns a reference to an initialized HyperiaApp.
-func NewHyperiaApp(
+func NewHyperiaApp( //nolint:maintidx // TODO: refactor so that the code is more maintainable
 	logger log.Logger,
 	db dbm.DB,
 	traceStore io.Writer,
@@ -966,7 +966,7 @@ func NewHyperiaApp(
 
 	// RegisterUpgradeHandlers is used for registering any on-chain upgrades.
 	// Make sure it's called after `app.ModuleManager` and `app.configurator` are set.
-	app.RegisterUpgradeHandlers()
+	// 	app.RegisterUpgradeHandlers() // NOTE: this is not called because we don't have any on-chain upgrades
 
 	autocliv1.RegisterQueryServer(app.GRPCQueryRouter(), runtimeservices.NewAutoCLIQueryService(app.ModuleManager.Modules))
 
@@ -1017,7 +1017,7 @@ func NewHyperiaApp(
 			wasm08keeper.NewWasmSnapshotter(app.CommitMultiStore(), &app.Wasm08Keeper),
 		)
 		if err != nil {
-			panic(fmt.Errorf("failed to register snapshot extension: %s", err))
+			panic(fmt.Errorf("failed to register snapshot extension: %w", err))
 		}
 	}
 
@@ -1105,7 +1105,7 @@ func (app *HyperiaApp) setAnteHandler(txConfig client.TxConfig, wasmConfig wasmt
 		},
 	)
 	if err != nil {
-		panic(fmt.Errorf("failed to create AnteHandler: %s", err))
+		panic(fmt.Errorf("failed to create AnteHandler: %w", err))
 	}
 
 	// Set the AnteHandler for the app
@@ -1122,7 +1122,7 @@ func (app *HyperiaApp) setPostHandler() {
 	// Set the PostHandler for the app
 	sdkPostHandler, err := feemarketapp.NewPostHandler(postHandler)
 	if err != nil {
-		panic(fmt.Errorf("failed to create PostHandler: %s", err))
+		panic(fmt.Errorf("failed to create PostHandler: %w", err))
 	}
 	app.SetPostHandler(sdkPostHandler)
 }
