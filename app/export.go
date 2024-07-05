@@ -109,7 +109,7 @@ func (app *HyperiaApp) prepForZeroHeightGenesis(ctx sdk.Context, jailAllowedAddr
 	}
 
 	// clear validator slash events
-	app.DistrKeeper.DeleteAllValidatorSlashHyperiants(ctx)
+	app.DistrKeeper.DeleteAllValidatorSlashEvents(ctx)
 
 	// clear validator historical rewards
 	app.DistrKeeper.DeleteAllValidatorHistoricalRewards(ctx)
