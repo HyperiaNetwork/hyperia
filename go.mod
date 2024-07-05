@@ -230,17 +230,12 @@ replace (
 	github.com/dgrijalva/jwt-go => github.com/golang-jwt/jwt/v4 v4.4.2
 	// Fix upstream GHSA-h395-qcrw-5vmq vulnerability.
 	// See: https://github.com/cosmos/cosmos-sdk/issues/10409
-	github.com/gin-gonic/gin => github.com/gin-gonic/gin v1.8.1
+	github.com/gin-gonic/gin => github.com/gin-gonic/gin v1.9.1
 
 	// use cosmos-compatible protobufs
 	github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
 
 	github.com/osmosis-labs/tokenfactory => github.com/notional-labs/tokenfactory v0.0.0-20240323111121-fb1e8562da4d
-	github.com/prometheus/client_golang => github.com/prometheus/client_golang v1.19.0
-	github.com/prometheus/common => github.com/prometheus/common v0.52.2
-
-	// temporary replace statement to use latest dependencies
-	// github.com/CosmWasm/wasmd => github.com/faddat/wasmd v0.40.0-rc.1.0.20240303013559-e8c435758c06
 
 	// pin version! 126854af5e6d has issues with the store so that queries fail
 	github.com/syndtr/goleveldb => github.com/syndtr/goleveldb v1.0.1-0.20210819022825-2ae1ddf74ef7
