@@ -3,7 +3,6 @@ run:
   timeout: 15m
   sort-results: true
   allow-parallel-runners: true
-  exclude-dir: testutil/testdata
 
 linters:
   disable-all: true
@@ -106,7 +105,3 @@ linters-settings:
   gosimple:
     checks: ["all"]
   gocritic:
-    disabled-checks:
-      - regexpMust
-      - appendAssign
-      - ifElseChain
