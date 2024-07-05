@@ -1,4 +1,4 @@
-# Eve Network Testnet
+# Hyperia Network Testnet
 
 This testnet will start with the node version `0.0.2`.
 
@@ -14,7 +14,7 @@ This testnet will start with the node version `0.0.2`.
 
 ```bash
 git clone https://github.com/HyperiaNetwork/hyperia.git
-cd eve
+cd hyperia
 git checkout v0.0.2
 make install
 ```
