@@ -5,7 +5,6 @@ import (
 	"io"
 	"os"
 
-	"github.com/HyperiaNetwork/hyperia/app"
 	cmtcfg "github.com/cometbft/cometbft/config"
 	dbm "github.com/cosmos/cosmos-db"
 	"github.com/prometheus/client_golang/prometheus"
@@ -37,6 +36,8 @@ import (
 	wasmcli "github.com/CosmWasm/wasmd/x/wasm/client/cli"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
+
+	"github.com/HyperiaNetwork/hyperia/app"
 )
 
 // initCometBFTConfig helps to override default CometBFT Config values.

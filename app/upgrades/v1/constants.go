@@ -1,10 +1,11 @@
 package v1
 
 import (
-	"github.com/HyperiaNetwork/hyperia/app/upgrades"
 	feemarkettypes "github.com/skip-mev/feemarket/x/feemarket/types"
 
 	store "cosmossdk.io/store/types"
+
+	"github.com/HyperiaNetwork/hyperia/app/upgrades"
 )
 
 const (

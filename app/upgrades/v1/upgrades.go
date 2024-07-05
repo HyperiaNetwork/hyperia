@@ -3,7 +3,6 @@ package v1
 import (
 	"context"
 
-	"github.com/HyperiaNetwork/hyperia/app/upgrades"
 	feemarkettypes "github.com/skip-mev/feemarket/x/feemarket/types"
 
 	sdkmath "cosmossdk.io/math"
@@ -11,6 +10,8 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
+
+	"github.com/HyperiaNetwork/hyperia/app/upgrades"
 )
 
 // TODO: Add any additional upgrades here

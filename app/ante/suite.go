@@ -3,10 +3,6 @@ package ante
 import (
 	"testing"
 
-	capabilitykeeper "github.com/cosmos/ibc-go/modules/capability/keeper"
-	transferkeeper "github.com/cosmos/ibc-go/v8/modules/apps/transfer/keeper"
-	channelkeeper "github.com/cosmos/ibc-go/v8/modules/core/04-channel/keeper"
-	portkeeper "github.com/cosmos/ibc-go/v8/modules/core/05-port/keeper"
 	feeabskeeper "github.com/osmosis-labs/fee-abstraction/v8/x/feeabs/keeper"
 	feeabstestutil "github.com/osmosis-labs/fee-abstraction/v8/x/feeabs/testutil"
 	feeabstypes "github.com/osmosis-labs/fee-abstraction/v8/x/feeabs/types"
@@ -31,6 +27,11 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
+
+	capabilitykeeper "github.com/cosmos/ibc-go/modules/capability/keeper"
+	transferkeeper "github.com/cosmos/ibc-go/v8/modules/apps/transfer/keeper"
+	channelkeeper "github.com/cosmos/ibc-go/v8/modules/core/04-channel/keeper"
+	portkeeper "github.com/cosmos/ibc-go/v8/modules/core/05-port/keeper"
 )
 
 // TestAccount represents an account used in the tests in x/auth/ante.
