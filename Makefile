@@ -55,11 +55,11 @@ build_tags_comma_sep := $(subst $(empty),$(comma),$(build_tags))
 
 # process linker flags
 
-ldflags = -X github.com/cosmos/cosmos-sdk/version.Name=eve \
-		  -X github.com/cosmos/cosmos-sdk/version.AppName=eved \
+ldflags = -X github.com/cosmos/cosmos-sdk/version.Name=hyperia \
+		  -X github.com/cosmos/cosmos-sdk/version.AppName=hyperiad \
 		  -X github.com/cosmos/cosmos-sdk/version.Version=$(VERSION) \
 		  -X github.com/cosmos/cosmos-sdk/version.Commit=$(COMMIT) \
-		  -X github.com/HyperiaNetwork/hyperia/app.Bech32Prefix=eve \
+		  -X github.com/HyperiaNetwork/hyperia/app.Bech32Prefix=hype \
 		  -X "github.com/cosmos/cosmos-sdk/version.BuildTags=$(build_tags_comma_sep)"
 
 ifeq ($(WITH_CLEVELDB),yes)
@@ -80,14 +80,14 @@ all: install lint test
 
 build: go.sum
 ifeq ($(OS),Windows_NT)
-	$(error eved server not supported. Use "make build-windows-client" for client)
+	$(error hyperiad server not supported. Use "make build-windows-client" for client)
 	exit 1
 else
-	go build $(BUILD_FLAGS) -o build/eved ./cmd/eved
+	go build $(BUILD_FLAGS) -o build/hyperiad ./cmd/hyperiad
 endif
 
 build-windows-client: go.sum
-	GOOS=windows GOARCH=amd64 go build $(BUILD_FLAGS) -o build/eved.exe ./cmd/eved
+	GOOS=windows GOARCH=amd64 go build $(BUILD_FLAGS) -o build/hyperiad.exe ./cmd/hyperiad
 
 build-contract-tests-hooks:
 ifeq ($(OS),Windows_NT)
@@ -97,7 +97,7 @@ else
 endif
 
 install: go.sum
-	go install $(BUILD_FLAGS) ./cmd/eved
+	go install $(BUILD_FLAGS) ./cmd/hyperiad
 
 ########################################
 ### Tools & dependencies
@@ -113,7 +113,7 @@ go.sum: go.mod
 draw-deps:
 	@# requires brew install graphviz or apt-get install graphviz
 	go install github.com/RobotsAndPencils/goviz@latest
-	@goviz -i ./cmd/eved -d 2 | dot -Tpng -o dependency-graph.png
+	@goviz -i ./cmd/hyperiad -d 2 | dot -Tpng -o dependency-graph.png
 
 clean:
 	rm -rf snapcraft-local.yaml build/
@@ -175,11 +175,11 @@ test-alliance:
 	./scripts/tests/alliance/delegate.sh
 
 clean-testing-data:
-	@echo "Killing eved and removing previous data"
+	@echo "Killing hyperiad and removing previous data"
 	-@pkill $(BINARY) 2>/dev/null
 	-@pkill rly 2>/dev/null
-	-@pkill eved_new 2>/dev/null
-	-@pkill eved_old 2>/dev/null
+	-@pkill hyperiad_new 2>/dev/null
+	-@pkill hyperiad_old 2>/dev/null
 	-@rm -rf ./data
 
 ###############################################################################
