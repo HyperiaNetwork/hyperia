@@ -114,7 +114,7 @@ func SetupTestSuite(t *testing.T, isCheckTx bool) *AnteTestSuite {
 
 	// setup feemarket
 	feemarketParams := feemarkettypes.DefaultParams()
-	feemarketParams.FeeDenom = "uhyperia"
+	feemarketParams.FeeDenom = "uhype"
 	suite.feemarketKeeper = feemarketkeeper.NewKeeper(suite.encCfg.Codec, key, suite.accountKeeper, &DenomResolverImpl{
 		FeeabsKeeper:  suite.feeabsKeeper,
 		StakingKeeper: suite.stakingKeeper,

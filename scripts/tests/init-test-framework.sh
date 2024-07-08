@@ -1,6 +1,6 @@
 #!/bin/bash
 
-BINARY=hyperiad
+BINARY=./build/hyperiad
 CHAIN_DIR=$(pwd)/data
 CHAINID_1=hype-1
 CHAINID_2=hype-2
@@ -38,7 +38,7 @@ GRPCWEB_2=9091
 # Stop if it is already running
 if pgrep -x "$BINARY" >/dev/null; then
     echo "Terminating $BINARY..."
-    killall $BINARY
+    killall -9 $BINARY
 fi
 
 echo "Removing previous data..."

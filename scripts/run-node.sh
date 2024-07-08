@@ -38,7 +38,7 @@ if [ -z "$BINARY" ]; then
     BINARY=build/hyperiad
 fi
 
-CHAIN_ID="hype-1"
+CHAIN_ID="test-hype-1"
 KEYRING="test"
 KEY="test0"
 
@@ -53,9 +53,15 @@ $BINARY keys add $KEY --keyring-backend $KEYRING --home $HOME_DIR
 # Allocate genesis accounts (cosmos formatted addresses)
 $BINARY genesis add-genesis-account $KEY "1000000000000000${DENOM}" --keyring-backend $KEYRING --home $HOME_DIR
 
-update_test_genesis '.app_state["gov"]["voting_params"]["voting_period"]="600s"'
-update_test_genesis '.app_state["mint"]["params"]["mint_denom"]="'$DENOM'"'
+update_test_genesis '.app_state["gov"]["voting_params"]["voting_period"]="15s"'
 update_test_genesis '.app_state["gov"]["deposit_params"]["min_deposit"]=[{"denom":"'$DENOM'","amount": "1000000"}]'
+update_test_genesis '.app_state["gov"]["params"]["min_deposit"]=[{"denom":"'$DENOM'","amount": "1000000"}]'
+update_test_genesis '.app_state["gov"]["params"]["expedited_min_deposit"]=[{"denom":"'$DENOM'","amount": "50000000"}]'
+# update_test_genesis '.app_state["tokenfactory"]["params"]["denom_creation_fee"]=[{"denom":"'$DENOM'","amount": "1000000"}]'
+update_test_genesis '.app_state["tokenfactory"]["params"]["denom_creation_fee"]=[]'
+update_test_genesis '.app_state["tokenfactory"]["params"]["denom_creation_gas_consume"]=2000000'
+update_test_genesis '.app_state["feemarket"]["params"]["fee_denom"]="'$DENOM'"'
+update_test_genesis '.app_state["mint"]["params"]["mint_denom"]="'$DENOM'"'
 update_test_genesis '.app_state["crisis"]["constant_fee"]={"denom":"'$DENOM'","amount":"1000"}'
 update_test_genesis '.app_state["staking"]["params"]["bond_denom"]="'$DENOM'"'
 
@@ -64,8 +70,6 @@ $SED_BINARY -i '0,/enable = false/s//enable = true/' $HOME_DIR/config/app.toml
 $SED_BINARY -i 's/swagger = false/swagger = true/' $HOME_DIR/config/app.toml
 $SED_BINARY -i -e 's/enabled-unsafe-cors = false/enabled-unsafe-cors = true/g' $HOME_DIR/config/app.toml
 $SED_BINARY -i 's/minimum-gas-prices = "0.25uhype"/minimum-gas-prices = "0.0hype"/' $HOME_DIR/config/app.toml
-
-
 # Sign genesis transaction
 $BINARY genesis gentx $KEY "1000000${DENOM}" --commission-rate=$COMMISSION_RATE --commission-max-rate=$COMMISSION_MAX_RATE --keyring-backend $KEYRING --chain-id $CHAIN_ID --home $HOME_DIR
 
@@ -75,4 +79,3 @@ $BINARY genesis collect-gentxs --home $HOME_DIR
 # Run this to ensure everything worked and that the genesis file is setup correctly
 $BINARY genesis validate-genesis --home $HOME_DIR
 $BINARY start --home $HOME_DIR
-
