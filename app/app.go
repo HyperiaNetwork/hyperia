@@ -1070,6 +1070,7 @@ func (app *HyperiaApp) FinalizeBlock(req *abci.RequestFinalizeBlock) (*abci.Resp
 		ctx := app.NewUncachedContext(false, tmproto.Header{})
 		// when skipping sdk 47 for sdk 50, the upgrade handler is called too late in BaseApp
 		// this is a hack to ensure that the migration is executed when needed and not panics
+		// prevents panic: consensus key is nil: collections: not found: key 'no_key' of type github.com/cosmos/gogoproto/tendermint.types.ConsensusParams
 
 		// sdk 47:
 		// Migrate Tendermint consensus parameters from x/params module to a dedicated x/consensus module.
