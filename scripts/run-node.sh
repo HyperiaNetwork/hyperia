@@ -11,10 +11,10 @@ if [ "$CONTINUE" == "true" ]; then
 fi
 
 rm -rf mytestnet
-pkill -9 eved
+pkill -9 hyperiad
 
-# check DENOM is set. If not, set to ueve
-DENOM=${2:-ueve}
+# check DENOM is set. If not, set to uhype
+DENOM=${2:-uhype}
 
 COMMISSION_RATE=0.01
 COMMISSION_MAX_RATE=0.02
@@ -32,13 +32,13 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     fi
 fi
 
-# check BINARY is set. If not, build eved and set BINARY
+# check BINARY is set. If not, build hyperiad and set BINARY
 if [ -z "$BINARY" ]; then
     make build
-    BINARY=build/eved
+    BINARY=build/hyperiad
 fi
 
-CHAIN_ID="evenetwork-1"
+CHAIN_ID="hype-1"
 KEYRING="test"
 KEY="test0"
 
@@ -49,7 +49,6 @@ update_test_genesis () {
 }
 
 $BINARY init --chain-id $CHAIN_ID moniker --home $HOME_DIR
-
 $BINARY keys add $KEY --keyring-backend $KEYRING --home $HOME_DIR
 # Allocate genesis accounts (cosmos formatted addresses)
 $BINARY genesis add-genesis-account $KEY "1000000000000000${DENOM}" --keyring-backend $KEYRING --home $HOME_DIR
@@ -64,7 +63,7 @@ update_test_genesis '.app_state["staking"]["params"]["bond_denom"]="'$DENOM'"'
 $SED_BINARY -i '0,/enable = false/s//enable = true/' $HOME_DIR/config/app.toml
 $SED_BINARY -i 's/swagger = false/swagger = true/' $HOME_DIR/config/app.toml
 $SED_BINARY -i -e 's/enabled-unsafe-cors = false/enabled-unsafe-cors = true/g' $HOME_DIR/config/app.toml
-$SED_BINARY -i 's/minimum-gas-prices = "0.25ueve"/minimum-gas-prices = "0.0eve"/' $HOME_DIR/config/app.toml
+$SED_BINARY -i 's/minimum-gas-prices = "0.uhype"/minimum-gas-prices = "0.0hype"/' $HOME_DIR/config/app.toml
 
 
 # Sign genesis transaction

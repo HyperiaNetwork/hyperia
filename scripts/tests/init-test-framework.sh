@@ -1,12 +1,12 @@
 #!/bin/bash
 
-BINARY=eved
+BINARY=hyperiad
 CHAIN_DIR=$(pwd)/data
-CHAINID_1=test-1
-CHAINID_2=test-2
+CHAINID_1=hype-1
+CHAINID_2=hype-2
 
 ### Custom genesis files
-DENOM=uwhale
+DENOM=uhype
 GENESIS_1=$CHAIN_DIR/$CHAINID_1/config/genesis.json
 TMP_GENESIS_1=$CHAIN_DIR/$CHAINID_1/config/genesis.json.tmp
 
@@ -78,7 +78,6 @@ WALLET3_ADDR=$($BINARY keys show wallet3 --home $CHAIN_DIR/$CHAINID_1 --keyring-
 WALLET4_ADDR=$($BINARY keys show wallet4 --home $CHAIN_DIR/$CHAINID_2 --keyring-backend test -a)
 RLY1_ADDR=$($BINARY keys show rly1 --home $CHAIN_DIR/$CHAINID_1 --keyring-backend test -a)
 RLY2_ADDR=$($BINARY keys show rly2 --home $CHAIN_DIR/$CHAINID_2 --keyring-backend test -a)
-
 $BINARY genesis add-genesis-account $VAL1_ADDR "1000000000000${DENOM}" --home $CHAIN_DIR/$CHAINID_1
 $BINARY genesis add-genesis-account $VAL2_ADDR "1000000000000${DENOM}" --home $CHAIN_DIR/$CHAINID_2
 $BINARY genesis add-genesis-account $WALLET1_ADDR "1000000000000${DENOM}" --home $CHAIN_DIR/$CHAINID_1
@@ -89,8 +88,8 @@ $BINARY genesis add-genesis-account $RLY1_ADDR "1000000000000${DENOM}" --home $C
 $BINARY genesis add-genesis-account $RLY2_ADDR "1000000000000${DENOM}" --home $CHAIN_DIR/$CHAINID_2
 
 echo "Creating and collecting gentx..."
-$BINARY genesis gentx val1 7000000000uwhale --home $CHAIN_DIR/$CHAINID_1 --chain-id $CHAINID_1 --keyring-backend test
-$BINARY genesis gentx val2 7000000000uwhale --home $CHAIN_DIR/$CHAINID_2 --chain-id $CHAINID_2 --keyring-backend test
+$BINARY genesis gentx val1 7000000000uhype --home $CHAIN_DIR/$CHAINID_1 --chain-id $CHAINID_1 --keyring-backend test
+$BINARY genesis gentx val2 7000000000uhype --home $CHAIN_DIR/$CHAINID_2 --chain-id $CHAINID_2 --keyring-backend test
 $BINARY genesis collect-gentxs --home $CHAIN_DIR/$CHAINID_1 &> /dev/null
 $BINARY genesis collect-gentxs --home $CHAIN_DIR/$CHAINID_2 &> /dev/null
 

@@ -1,12 +1,12 @@
 #!/bin/bash
 
-BINARY=build/eved
+BINARY=build/hyperiad
 
-CHAIN_ID=local-eve
+CHAIN_ID=local-hype
 
 CONTRACT=cw20_base
 HOME=mytestnet
-DENOM="ueve"
+DENOM="uhype"
 KEY="test0"
 
 KEYRING="test"

@@ -1,4 +1,4 @@
-# Hyperia Network Testnet
+# Hyperia Network Testnet ( soon&#8482; )
 
 This testnet will start with the node version `0.0.2`.
 
@@ -15,35 +15,35 @@ This testnet will start with the node version `0.0.2`.
 ```bash
 git clone https://github.com/HyperiaNetwork/hyperia.git
 cd hyperia
-git checkout v0.0.2
+git checkout v0.0.2 # TODO
 make install
 ```
 
 ### Check Node version
 
 ```bash
-# Get node version (should be v0.0.2)
-eved version
+# Get node version (should be v0.0.2) # TODO
+hyperiad version
 
 # Get node long version (should be 25e1602d5a29e4ab49addda7e4178b50894999df)
-eved version --long | grep commit
+hyperiad version --long | grep commit
 ```
 
 ### Initialize Chain
 
 ```bash
-rm -rf ~/.eved
-eved init develop --chain-id=evenetwork-1
+rm -rf ~/.hyperiad
+hyperiad init develop --chain-id=hype-1
 ```
 
 ### Replace pre-genesis
 
 ```bash
 # Download the file
-curl -s https://raw.githubusercontent.com/eve-network/eve/main/testnets/genesis.json > ~/.eved/config/genesis.json
+curl -s https://raw.githubusercontent.com/HyperiaNetwork/hyperia/main/testnets/genesis.json > ~/.hyperiad/config/genesis.json
 
 # Calculate the SHA256 checksum
-calculated_checksum=$(shasum -a 256 ~/.eved/config/genesis.json | awk '{ print $1 }')
+calculated_checksum=$(shasum -a 256 ~/.hyperiad/config/genesis.json | awk '{ print $1 }')
 
 # Compare with the expected checksum
 expected_checksum="244d5a3999dd0851eb338b032a57fbea24a89b4016a7907a9d20c2045c689857"
@@ -65,5 +65,5 @@ export PERSISTENT_SEEDS=""
 ### Run node with persistent peers
 
 ```bash
-eved start --p2p.persistent_peers=$PERSISTENT_SEEDS
+hyperiad start --p2p.persistent_peers=$PERSISTENT_SEEDS
 ```
