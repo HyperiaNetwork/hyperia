@@ -141,7 +141,17 @@ update_test_genesis ".app_state[\"gov\"][\"params\"][\"min_deposit\"][0][\"denom
 update_test_genesis ".app_state[\"tokenfactory\"][\"params\"][\"denom_creation_fee\"][0][\"denom\"]=\"$DENOM\""
 update_test_genesis ".app_state[\"feeburn\"][\"params\"][\"tx_fee_burn_percent\"]=\"50\""
 
-
+update_test_genesis '.app_state["gov"]["voting_params"]["voting_period"]="15s"'
+update_test_genesis '.app_state["gov"]["deposit_params"]["min_deposit"]=[{"denom":"'$DENOM'","amount": "1000000"}]'
+update_test_genesis '.app_state["gov"]["params"]["min_deposit"]=[{"denom":"'$DENOM'","amount": "1000000"}]'
+update_test_genesis '.app_state["gov"]["params"]["expedited_min_deposit"]=[{"denom":"'$DENOM'","amount": "50000000"}]'
+# update_test_genesis '.app_state["tokenfactory"]["params"]["denom_creation_fee"]=[{"denom":"'$DENOM'","amount": "1000000"}]'
+update_test_genesis '.app_state["tokenfactory"]["params"]["denom_creation_fee"]=[]'
+update_test_genesis '.app_state["tokenfactory"]["params"]["denom_creation_gas_consume"]=2000000'
+update_test_genesis '.app_state["feemarket"]["params"]["fee_denom"]="'$DENOM'"'
+update_test_genesis '.app_state["mint"]["params"]["mint_denom"]="'$DENOM'"'
+update_test_genesis '.app_state["crisis"]["constant_fee"]={"denom":"'$DENOM'","amount":"1000"}'
+update_test_genesis '.app_state["staking"]["params"]["bond_denom"]="'$DENOM'"'
 # Starting the chain
 echo "Starting $CHAINID_1 in $CHAIN_DIR..."
 echo "Creating log file at $CHAIN_DIR/$CHAINID_1.log"

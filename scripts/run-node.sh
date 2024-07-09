@@ -38,7 +38,7 @@ if [ -z "$BINARY" ]; then
     BINARY=build/hyperiad
 fi
 
-CHAIN_ID="test-hype-1"
+CHAIN_ID="local-hype"
 KEYRING="test"
 KEY="test0"
 
@@ -69,7 +69,7 @@ update_test_genesis '.app_state["staking"]["params"]["bond_denom"]="'$DENOM'"'
 $SED_BINARY -i '0,/enable = false/s//enable = true/' $HOME_DIR/config/app.toml
 $SED_BINARY -i 's/swagger = false/swagger = true/' $HOME_DIR/config/app.toml
 $SED_BINARY -i -e 's/enabled-unsafe-cors = false/enabled-unsafe-cors = true/g' $HOME_DIR/config/app.toml
-$SED_BINARY -i 's/minimum-gas-prices = "0.25uhype"/minimum-gas-prices = "0.0hype"/' $HOME_DIR/config/app.toml
+$SED_BINARY -i 's/minimum-gas-prices = "0.25uhype"/minimum-gas-prices = "0.0uhype"/' $HOME_DIR/config/app.toml
 # Sign genesis transaction
 $BINARY genesis gentx $KEY "1000000${DENOM}" --commission-rate=$COMMISSION_RATE --commission-max-rate=$COMMISSION_MAX_RATE --keyring-backend $KEYRING --chain-id $CHAIN_ID --home $HOME_DIR
 

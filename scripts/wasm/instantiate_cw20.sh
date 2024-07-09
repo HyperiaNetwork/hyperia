@@ -25,7 +25,7 @@ INIT=$(cat <<EOF
 EOF
 )
 
-if ! $BINARY tx wasm instantiate $CODE "$INIT" --label "First Coin" --no-admin --from $VAL_KEY --keyring-backend test --chain-id $CHAIN_ID -y --gas auto --gas-adjustment 1.3 --home $HOME; then
+if ! $BINARY tx wasm instantiate $CODE "$INIT" --label "First Coin" --no-admin --from $VAL_KEY --keyring-backend test --chain-id $CHAIN_ID -y --fees 332001uhype --gas auto --gas-adjustment 1.3 --home $HOME; then
     echo "Error instantiating contract"
     exit 1
 fi
@@ -72,7 +72,7 @@ EOF
 # $BINARY tx wasm execute $CONTRACT "$TRANSFER" --from $VAL_KEY --keyring-backend test \
 #     --chain-id $CHAIN_ID -y --gas auto --gas-adjustment 1.3 --home $HOME
 
-if ! $BINARY tx wasm execute $CONTRACT "$TRANSFER" --from $VAL_KEY --keyring-backend test --chain-id $CHAIN_ID -y --gas auto --gas-adjustment 1.3 --home $HOME; then
+if ! $BINARY tx wasm execute $CONTRACT "$TRANSFER" --from $VAL_KEY --keyring-backend test --chain-id $CHAIN_ID -y --fees 332001uhype --gas auto --gas-adjustment 1.3 --home $HOME; then
     echo "Error executing contract"
     exit 1
 fi
