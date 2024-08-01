@@ -1,12 +1,12 @@
 #!/bin/bash
 
-BINARY=eved
+BINARY=./build/hyperiad
 CHAIN_DIR=$(pwd)/data
-CHAINID_1=test-1
-CHAINID_2=test-2
+CHAINID_1=hype-1
+CHAINID_2=hype-2
 
 ### Custom genesis files
-DENOM=uwhale
+DENOM=uhype
 GENESIS_1=$CHAIN_DIR/$CHAINID_1/config/genesis.json
 TMP_GENESIS_1=$CHAIN_DIR/$CHAINID_1/config/genesis.json.tmp
 
@@ -38,7 +38,7 @@ GRPCWEB_2=9091
 # Stop if it is already running
 if pgrep -x "$BINARY" >/dev/null; then
     echo "Terminating $BINARY..."
-    killall $BINARY
+    killall -9 $BINARY
 fi
 
 echo "Removing previous data..."
@@ -78,7 +78,6 @@ WALLET3_ADDR=$($BINARY keys show wallet3 --home $CHAIN_DIR/$CHAINID_1 --keyring-
 WALLET4_ADDR=$($BINARY keys show wallet4 --home $CHAIN_DIR/$CHAINID_2 --keyring-backend test -a)
 RLY1_ADDR=$($BINARY keys show rly1 --home $CHAIN_DIR/$CHAINID_1 --keyring-backend test -a)
 RLY2_ADDR=$($BINARY keys show rly2 --home $CHAIN_DIR/$CHAINID_2 --keyring-backend test -a)
-
 $BINARY genesis add-genesis-account $VAL1_ADDR "1000000000000${DENOM}" --home $CHAIN_DIR/$CHAINID_1
 $BINARY genesis add-genesis-account $VAL2_ADDR "1000000000000${DENOM}" --home $CHAIN_DIR/$CHAINID_2
 $BINARY genesis add-genesis-account $WALLET1_ADDR "1000000000000${DENOM}" --home $CHAIN_DIR/$CHAINID_1
@@ -89,8 +88,8 @@ $BINARY genesis add-genesis-account $RLY1_ADDR "1000000000000${DENOM}" --home $C
 $BINARY genesis add-genesis-account $RLY2_ADDR "1000000000000${DENOM}" --home $CHAIN_DIR/$CHAINID_2
 
 echo "Creating and collecting gentx..."
-$BINARY genesis gentx val1 7000000000uwhale --home $CHAIN_DIR/$CHAINID_1 --chain-id $CHAINID_1 --keyring-backend test
-$BINARY genesis gentx val2 7000000000uwhale --home $CHAIN_DIR/$CHAINID_2 --chain-id $CHAINID_2 --keyring-backend test
+$BINARY genesis gentx val1 7000000000uhype --home $CHAIN_DIR/$CHAINID_1 --chain-id $CHAINID_1 --keyring-backend test
+$BINARY genesis gentx val2 7000000000uhype --home $CHAIN_DIR/$CHAINID_2 --chain-id $CHAINID_2 --keyring-backend test
 $BINARY genesis collect-gentxs --home $CHAIN_DIR/$CHAINID_1 &> /dev/null
 $BINARY genesis collect-gentxs --home $CHAIN_DIR/$CHAINID_2 &> /dev/null
 
@@ -142,7 +141,17 @@ update_test_genesis ".app_state[\"gov\"][\"params\"][\"min_deposit\"][0][\"denom
 update_test_genesis ".app_state[\"tokenfactory\"][\"params\"][\"denom_creation_fee\"][0][\"denom\"]=\"$DENOM\""
 update_test_genesis ".app_state[\"feeburn\"][\"params\"][\"tx_fee_burn_percent\"]=\"50\""
 
-
+update_test_genesis '.app_state["gov"]["voting_params"]["voting_period"]="15s"'
+update_test_genesis '.app_state["gov"]["deposit_params"]["min_deposit"]=[{"denom":"'$DENOM'","amount": "1000000"}]'
+update_test_genesis '.app_state["gov"]["params"]["min_deposit"]=[{"denom":"'$DENOM'","amount": "1000000"}]'
+update_test_genesis '.app_state["gov"]["params"]["expedited_min_deposit"]=[{"denom":"'$DENOM'","amount": "50000000"}]'
+# update_test_genesis '.app_state["tokenfactory"]["params"]["denom_creation_fee"]=[{"denom":"'$DENOM'","amount": "1000000"}]'
+update_test_genesis '.app_state["tokenfactory"]["params"]["denom_creation_fee"]=[]'
+update_test_genesis '.app_state["tokenfactory"]["params"]["denom_creation_gas_consume"]=2000000'
+update_test_genesis '.app_state["feemarket"]["params"]["fee_denom"]="'$DENOM'"'
+update_test_genesis '.app_state["mint"]["params"]["mint_denom"]="'$DENOM'"'
+update_test_genesis '.app_state["crisis"]["constant_fee"]={"denom":"'$DENOM'","amount":"1000"}'
+update_test_genesis '.app_state["staking"]["params"]["bond_denom"]="'$DENOM'"'
 # Starting the chain
 echo "Starting $CHAINID_1 in $CHAIN_DIR..."
 echo "Creating log file at $CHAIN_DIR/$CHAINID_1.log"

@@ -1,4 +1,4 @@
-# Eve Testnet
+# Hyperia Testnet
 
 This testnet will start with the node version `v0.0.5`.
 
@@ -15,7 +15,7 @@ This testnet will start with the node version `v0.0.5`.
 ```bash
 git clone https://github.com/HyperiaNetwork/hyperia.git
 cd eve
-git checkout v0.0.5
+git checkout v0.0.5 # TODO
 make install
 ```
 
@@ -23,22 +23,22 @@ make install
 
 ```bash
 # Get node version (should be v0.0.5)
-eved version
+hyperiad version
 
 # Get node long version (should be 31f4be4340efe6e6b05b819b83fee1ed1c9b280b)
-eved version --long | grep commit
+hyperiad version --long | grep commit
 ```
 
 ### Initialize Chain
 
 ```bash
-eved init MONIKER --chain-id=evenetwork-1
+hyperiad init MONIKER --chain-id=hype-1
 ```
 
 ### Download genesis
 
 ```bash
-curl -s https://raw.githubusercontent.com/eve-network/eve/main/testnets/genesis.json > ~/.eved/config/genesis.json
+curl -s https://raw.githubusercontent.com/eve-network/eve/main/testnets/genesis.json > ~/.hyperiad/config/genesis.json
 ```
 
 ## Create gentx
@@ -46,25 +46,25 @@ curl -s https://raw.githubusercontent.com/eve-network/eve/main/testnets/genesis.
 Create wallet
 
 ```bash
-eved keys add KEY_NAME
+hyperiad keys add KEY_NAME
 ```
 
 Fund yourself `1000000000ueve`
 
 ```bash
-eved genesis add-genesis-account $(eved keys show KEY_NAME -a) 1000000000ueve
+hyperiad genesis add-genesis-account $(hyperiad keys show KEY_NAME -a) 1000000000ueve
 ```
 
 Use half (`1000000ueve`) for self-delegation
 
 ```bash
-eved genesis gentx KEY_NAME 1000000ueve --chain-id=evenetwork-1
+hyperiad genesis gentx KEY_NAME 1000000uhype --chain-id=hype-1
 ```
 
 If all goes well, you will see a message similar to the following:
 
 ```bash
-Genesis transaction written to "/home/user/.eved/config/gentx/gentx-******.json"
+Genesis transaction written to "/home/user/.hyperiad/config/gentx/gentx-******.json"
 ```
 
 ### Submit genesis transaction
@@ -78,4 +78,5 @@ Genesis transaction written to "/home/user/.eved/config/gentx/gentx-******.json"
 
 Set up your node and add seed-nodes
 
-    aad13aee1a9e3f55c16364c2af42832fefb2b735@94.130.64.229:26656
+> TODO
+<!-- aad13aee1a9e3f55c16364c2af42832fefb2b735@94.130.64.229:26656 -->

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION="v0.16.0"
+VERSION="v2.0.0"
 CONTRACTS="cw20_base"
 
 for CONTRACT in $CONTRACTS; do

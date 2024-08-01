@@ -6,6 +6,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"reflect"
 	"sort"
 	"sync"
 
@@ -1064,20 +1065,38 @@ func NewHyperiaApp( //nolint:maintidx // TODO: refactor so that the code is more
 }
 
 func (app *HyperiaApp) FinalizeBlock(req *abci.RequestFinalizeBlock) (*abci.ResponseFinalizeBlock, error) {
-	// when skipping sdk 47 for sdk 50, the upgrade handler is called too late in BaseApp
 	// this is a hack to ensure that the migration is executed when needed and not panics
 	app.once.Do(func() {
 		ctx := app.NewUncachedContext(false, tmproto.Header{})
-		if _, err := app.ConsensusParamsKeeper.Params(ctx, &consensusparamtypes.QueryParamsRequest{}); err != nil {
-			// prevents panic: consensus key is nil: collections: not found: key 'no_key' of type github.com/cosmos/gogoproto/tendermint.types.ConsensusParams
-			// sdk 47:
-			// Migrate Tendermint consensus parameters from x/params module to a dedicated x/consensus module.
-			// see https://github.com/cosmos/cosmos-sdk/blob/v0.47.0/simapp/upgrades.go#L66
+		// when skipping sdk 47 for sdk 50, the upgrade handler is called too late in BaseApp
+		// this is a hack to ensure that the migration is executed when needed and not panics
+		// prevents panic: consensus key is nil: collections: not found: key 'no_key' of type github.com/cosmos/gogoproto/tendermint.types.ConsensusParams
+
+		// sdk 47:
+		// Migrate Tendermint consensus parameters from x/params module to a dedicated x/consensus module.
+		// see https://github.com/cosmos/cosmos-sdk/blob/v0.47.0/simapp/upgrades.go#L66
+
+		// Check if ConsensusParamsKeeper is initialized
+		if reflect.ValueOf(app.ConsensusParamsKeeper).IsZero() {
+			app.Logger().Error("ConsensusParamsKeeper is not initialized")
+			return
+		}
+
+		_, err := app.ConsensusParamsKeeper.Params(ctx, &consensusparamtypes.QueryParamsRequest{})
+		if err != nil {
+			app.Logger().Info("Attempting to migrate consensus parameters", "error", err)
 			baseAppLegacySS := app.GetSubspace(baseapp.Paramspace)
+			if baseAppLegacySS.Name() == "" {
+				app.Logger().Error("baseAppLegacySS is invalid")
+				return
+			}
 			err := baseapp.MigrateParams(sdk.UnwrapSDKContext(ctx), baseAppLegacySS, app.ConsensusParamsKeeper.ParamsStore)
 			if err != nil {
-				panic(err)
+				app.Logger().Error("Failed to migrate params", "error", err)
+				// TODO: Consider how to handle this error without panicking
+				return
 			}
+			app.Logger().Info("Successfully migrated consensus parameters")
 		}
 	})
 

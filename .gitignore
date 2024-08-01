@@ -27,6 +27,9 @@ mytestnet
 # Testing
 coverage.txt
 profile.out
+screenlog.0
+contract_tests/*
+scripts/wasm/*.wasm
 
 # Vagrant
 .vagrant/
@@ -45,5 +48,4 @@ dependency-graph.png
 *.aux
 *.out
 *.synctex.gz
-contract_tests/*
-scripts/wasm/*.wasm
+
