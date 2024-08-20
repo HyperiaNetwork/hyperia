@@ -18,9 +18,9 @@ import (
 
 func TestMempoolDecorator(t *testing.T) {
 	gasLimit := uint64(200000)
-	minGasPrice := sdk.NewDecCoinsFromCoins(sdk.NewInt64Coin("uhyperia", feemarkettypes.DefaultMinBaseGasPrice.TruncateInt64()))
+	minGasPrice := sdk.NewDecCoinsFromCoins(sdk.NewInt64Coin("uhype", feemarkettypes.DefaultMinBaseGasPrice.TruncateInt64()))
 	validFeeAmount := feemarkettypes.DefaultMinBaseGasPrice.MulInt64(int64(gasLimit))
-	validFee := sdk.NewCoins(sdk.NewCoin("uhyperia", validFeeAmount.TruncateInt()))
+	validFee := sdk.NewCoins(sdk.NewCoin("uhype", validFeeAmount.TruncateInt()))
 	validIbcFee := sdk.NewCoins(sdk.NewCoin("ibcfee", validFeeAmount.TruncateInt()))
 	// mockHostZoneConfig is used to mock the host zone config, with ibcfee as the ibc fee denom to be used as alternative fee
 	mockHostZoneConfig := types.HostChainFeeAbsConfig{
@@ -55,7 +55,7 @@ func TestMempoolDecorator(t *testing.T) {
 				err := suite.feeabsKeeper.SetHostZoneConfig(suite.ctx, mockHostZoneConfig)
 				require.NoError(t, err)
 				suite.feeabsKeeper.SetTwapRate(suite.ctx, "ibcfee", math.LegacyNewDec(1))
-				suite.stakingKeeper.EXPECT().BondDenom(gomock.Any()).Return("uhyperia", nil).AnyTimes()
+				suite.stakingKeeper.EXPECT().BondDenom(gomock.Any()).Return("uhype", nil).AnyTimes()
 			},
 			nil,
 		},
@@ -66,7 +66,7 @@ func TestMempoolDecorator(t *testing.T) {
 				err := suite.feeabsKeeper.SetHostZoneConfig(suite.ctx, mockHostZoneConfig)
 				require.NoError(t, err)
 				suite.feeabsKeeper.SetTwapRate(suite.ctx, "ibcfee", math.LegacyNewDec(1))
-				suite.stakingKeeper.EXPECT().BondDenom(gomock.Any()).Return("uhyperia", nil).AnyTimes()
+				suite.stakingKeeper.EXPECT().BondDenom(gomock.Any()).Return("uhype", nil).AnyTimes()
 			},
 			sdkerrors.ErrInsufficientFee,
 		},
@@ -74,7 +74,7 @@ func TestMempoolDecorator(t *testing.T) {
 			"fee in unsupported denom, should fail",
 			sdk.NewCoins(sdk.NewCoin("unsupported", validFeeAmount.TruncateInt())),
 			func(suite *AnteTestSuite) {
-				suite.stakingKeeper.EXPECT().BondDenom(gomock.Any()).Return("uhyperia", nil).AnyTimes()
+				suite.stakingKeeper.EXPECT().BondDenom(gomock.Any()).Return("uhype", nil).AnyTimes()
 			},
 			ErrDenomNotRegistered("unsupported"),
 		},

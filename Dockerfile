@@ -3,7 +3,7 @@ FROM golang:1.21-alpine3.18 as builder
 ARG LIBWASM_VERSION
 ARG LIBWASM_CHECKSUM
 
-RUN test -n "${LIBWASM_VERSION}"
+RUN test -n "${LIBWASM_VERSION}" # TODO: seems to be empty on docker build
 RUN test -n "${LIBWASM_CHECKSUM}"
 
 RUN set -eux; apk add --no-cache git libusb-dev linux-headers gcc musl-dev make;
@@ -29,10 +29,10 @@ WORKDIR /go/modules/light-clients/08-wasm
 
 RUN go mod download
 
-RUN GOOS=linux GOARCH=amd64 go build -mod=readonly -tags "netgo ledger muslc" -ldflags '-X github.com/cosmos/cosmos-sdk/version.Name=sim -X github.com/cosmos/cosmos-sdk/version.AppName=simd -X github.com/cosmos/cosmos-sdk/version.Version= -X github.com/cosmos/cosmos-sdk/version.Commit= -X "github.com/cosmos/cosmos-sdk/version.BuildTags=netgo ledger muslc," -w -s -linkmode=external -extldflags "-Wl,-z,muldefs -static"' -trimpath -o /go/build/ ./...
+RUN GOOS=linux GOARCH=amd64 go build -mod=readonly -tags "netgo ledger muslc" -ldflags '-X github.com/cosmos/cosmos-sdk/version.Name=hyperia -X github.com/cosmos/cosmos-sdk/version.AppName=hyperiad -X github.com/cosmos/cosmos-sdk/version.Version= -X github.com/cosmos/cosmos-sdk/version.Commit= -X "github.com/cosmos/cosmos-sdk/version.BuildTags=netgo ledger muslc," -w -s -linkmode=external -extldflags "-Wl,-z,muldefs -static"' -trimpath -o /go/build/ ./...
 
 FROM alpine:3.18
 
-COPY --from=builder /go/build/simd /bin/simd
+COPY --from=builder /go/build/hyperiad /bin/hyperiad
 
-ENTRYPOINT ["simd"]
+ENTRYPOINT ["hyperiad"]
