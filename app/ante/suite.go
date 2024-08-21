@@ -7,6 +7,7 @@ import (
 	feeabstestutil "github.com/osmosis-labs/fee-abstraction/v8/x/feeabs/testutil"
 	feeabstypes "github.com/osmosis-labs/fee-abstraction/v8/x/feeabs/types"
 	feemarketante "github.com/skip-mev/feemarket/x/feemarket/ante"
+	feemarketmocks "github.com/skip-mev/feemarket/x/feemarket/ante/mocks"
 	feemarketkeeper "github.com/skip-mev/feemarket/x/feemarket/keeper"
 	feemarkettypes "github.com/skip-mev/feemarket/x/feemarket/types"
 	"github.com/stretchr/testify/require"
@@ -46,7 +47,7 @@ type AnteTestSuite struct {
 	clientCtx       client.Context
 	txBuilder       client.TxBuilder
 	accountKeeper   authkeeper.AccountKeeper
-	bankKeeper      *feeabstestutil.MockBankKeeper
+	bankKeeper      *feemarketmocks.BankKeeper
 	feeGrantKeeper  *feeabstestutil.MockFeegrantKeeper
 	stakingKeeper   *feeabstestutil.MockStakingKeeper
 	feeabsKeeper    feeabskeeper.Keeper
@@ -66,7 +67,7 @@ func SetupTestSuite(t *testing.T, isCheckTx bool) *AnteTestSuite {
 	govAuthority := authtypes.NewModuleAddress("gov").String()
 
 	// Setup mock keepers
-	suite.bankKeeper = feeabstestutil.NewMockBankKeeper(ctrl)
+	suite.bankKeeper = feemarketmocks.NewBankKeeper(t)
 	suite.stakingKeeper = feeabstestutil.NewMockStakingKeeper(ctrl)
 	suite.feeGrantKeeper = feeabstestutil.NewMockFeegrantKeeper(ctrl)
 	suite.channelKeeper = feeabstestutil.NewMockChannelKeeper(ctrl)
@@ -100,7 +101,8 @@ func SetupTestSuite(t *testing.T, isCheckTx bool) *AnteTestSuite {
 	suite.encCfg.Amino.RegisterConcrete(&testdata.TestMsg{}, "testdata.TestMsg", nil)
 	testdata.RegisterInterfaces(suite.encCfg.InterfaceRegistry)
 	suite.accountKeeper = authkeeper.NewAccountKeeper(
-		suite.encCfg.Codec, runtime.NewKVStoreService(key), authtypes.ProtoBaseAccount, maccPerms, authcodec.NewBech32Codec(sdk.GetConfig().GetBech32AccountAddrPrefix()), sdk.Bech32MainPrefix, govAuthority,
+		suite.encCfg.Codec, runtime.NewKVStoreService(authKey), authtypes.ProtoBaseAccount, maccPerms,
+		authcodec.NewBech32Codec(sdk.GetConfig().GetBech32AccountAddrPrefix()), sdk.Bech32MainPrefix, govAuthority,
 	)
 	suite.accountKeeper.SetModuleAccount(suite.ctx, authtypes.NewEmptyModuleAccount(feeabstypes.ModuleName))
 	// Setup feeabs keeper
