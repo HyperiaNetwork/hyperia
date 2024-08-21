@@ -1135,7 +1135,6 @@ func (app *HyperiaApp) setPostHandler() {
 	postHandler := feemarketapp.PostHandlerOptions{
 		AccountKeeper:   app.AccountKeeper,
 		BankKeeper:      app.BankKeeper,
-		FeeGrantKeeper:  app.FeeGrantKeeper,
 		FeeMarketKeeper: app.FeeMarketKeeper,
 	}
 	// Set the PostHandler for the app
@@ -1401,7 +1400,6 @@ func NewPostHandler(options feemarketapp.PostHandlerOptions) (sdk.PostHandler, e
 		feemarketpost.NewFeeMarketDeductDecorator(
 			options.AccountKeeper,
 			options.BankKeeper,
-			options.FeeGrantKeeper,
 			options.FeeMarketKeeper,
 		),
 	}
